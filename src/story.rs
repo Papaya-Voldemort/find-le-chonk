@@ -271,7 +271,7 @@ impl Game {
         say(format!("{} could be in any of those boxes...", cat()));
         sleep(500);
 
-        if self.cat_location == Fridge {
+        if self.cat_location == Garage {
             say(format!(
                 "Suddenly {}'s head pokes out from a stack of 8 boxes.",
                 cat()
@@ -389,6 +389,81 @@ impl Game {
         sleep(500);
 
         say("You walk over to the fridge and crack open the door.");
+        blank_rail();
+        sleep(800);
+
+        if self.cat_location == Fridge {
+            say(format!(
+                "A wave of cold air hits you, and there on the middle shelf, wedged between the leftover lasagna and a jar of pickles, sits {}.",
+                cat()
+            ));
+            sleep(500);
+
+            blank_rail();
+            say(format!("{}! How did you even fit in there?!", cat()));
+            sleep(500);
+
+            say("He blinks slowly at you, a noodle hanging from his whisker.");
+
+            return Ok(Ending);
+        } else {
+            say(
+                "Cold air, the little fridge light, and a lot of Larry's leftovers. No cat. But the purring is still going, and it's definitely louder now.",
+            );
+            dot_with_wait(3, 500);
+
+            println!();
+            blank_rail();
+
+            say("It's coming from the crisper drawer.");
+            sleep(500);
+
+            blank_rail();
+
+            let choice = confirm("Do you want to open the crisper drawer?").interact()?;
+
+            if choice {
+                say("You grab the handle and slide the drawer open...");
+                sleep(750);
+
+                dot_with_wait(3, 500);
+                println!();
+                blank_rail();
+
+                say(format!(
+                    "A {} is nestled in the lettuce, chirping happily with a cherry tomato stuffed in its beak. Turns out, birds can purr. Or at least, this one can.",
+                    bird()
+                ));
+
+                blank_rail();
+                say(format!("You found a {}! {} would be proud!", bird(), cat()));
+
+                self.found_bird()?;
+                sleep(600);
+
+                say(format!(
+                    "Keep collecting {}s, you're at {}/?.",
+                    bird(),
+                    self.birds_found
+                ));
+
+                blank_rail();
+                sleep(500);
+            } else {
+                say("You close the fridge and decide not to ask questions. Some drawers are better left shut.");
+
+                blank_rail();
+                sleep(500);
+            }
+
+            say(format!(
+                "No sign of {} in here. You do grab a quick bite of lasagna on the way out. For the search, of course.",
+                cat()
+            ));
+
+            blank_rail();
+            sleep(400);
+        }
 
         Ok(self.where_next()?)
     }
@@ -399,11 +474,170 @@ impl Game {
         say("You walk out front to check on the big oak tree.");
         sleep(500);
 
+        say("The yard is dead silent. No chirping, no singing, not even a squawk.");
+        blank_rail();
+        sleep(800);
+
+        if self.cat_location == Tree {
+            say("You look up. Way up. About halfway up the trunk, a big orange blob is clinging to a branch that is bending much farther than a branch should.");
+            sleep(500);
+
+            blank_rail();
+            say(format!("{}!! How did you get up there?!", cat()));
+            sleep(500);
+
+            say("He meows down at you, like this is somehow your fault.");
+
+            return Ok(Ending);
+        } else {
+            say(
+                "Dozens of birds are perched on the branches, all staring right at you. Not a single one of them is making a sound.",
+            );
+            dot_with_wait(3, 500);
+
+            println!();
+            blank_rail();
+
+            say(
+                "One of them is higher up than the rest, wearing a tiny bottle cap like a hard hat, and it keeps glancing at a hole in the trunk.",
+            );
+            sleep(500);
+
+            blank_rail();
+
+            let choice = confirm("Do you want to climb up and check the hole?").interact()?;
+
+            if choice {
+                say("You grab the lowest branch and haul yourself up, trying to ignore the hundred tiny eyes watching you...");
+                sleep(750);
+
+                dot_with_wait(3, 500);
+                println!();
+                blank_rail();
+
+                say(format!(
+                    "Inside the hole is a {} holding a scrap of cardboard that reads \"ON STRIKE.\" It hands you a feather and a pamphlet, then goes back to ignoring you.",
+                    bird()
+                ));
+
+                blank_rail();
+                say(format!("You found a {}! {} would be proud!", bird(), cat()));
+
+                self.found_bird()?;
+                sleep(600);
+
+                say(format!(
+                    "Keep collecting {}s, you're at {}/?.",
+                    bird(),
+                    self.birds_found
+                ));
+
+                blank_rail();
+                sleep(500);
+            } else {
+                say("You decide not to cross the picket line. Climbing trees in front of an angry union seems like a bad idea.");
+
+                blank_rail();
+                sleep(500);
+            }
+
+            say(format!(
+                "No sign of {} up here, and the birds aren't talking. You climb back down, feeling very judged.",
+                cat()
+            ));
+
+            blank_rail();
+            sleep(400);
+        }
+
         Ok(self.where_next()?)
     }
 
     pub(crate) fn porch(&mut self) -> Result<Scene, Error> {
         self.visited(Porch)?;
+
+        say("You open the front door and step out onto the porch. The morning sun is already warming the old wooden boards.");
+        sleep(500);
+
+        say(format!(
+            "If there's one spot {} loves more than that rug, it's right here in the sun.",
+            cat()
+        ));
+        blank_rail();
+        sleep(800);
+
+        if self.cat_location == Porch {
+            say("There, in the exact middle of the sunniest patch of the porch, lies a giant orange loaf of cat, belly up and snoring.");
+            sleep(500);
+
+            blank_rail();
+            say(format!(
+                "{}! I've been looking everywhere for you!",
+                cat()
+            ));
+            sleep(500);
+
+            say("He doesn't even open his eyes. He just flops over to the other side.");
+
+            return Ok(Ending);
+        } else {
+            say(
+                "The sunny spot is empty, but the boards are still warm, with a big, cat-shaped dent in the welcome mat.",
+            );
+            dot_with_wait(3, 500);
+
+            println!();
+            blank_rail();
+
+            say("Then you hear it: the mailbox is rattling, and the little red flag is wiggling up and down.");
+            sleep(500);
+
+            blank_rail();
+
+            let choice = confirm("Do you want to open the mailbox?").interact()?;
+
+            if choice {
+                say("You walk down to the end of the path and slowly lift the mailbox lid...");
+                sleep(750);
+
+                dot_with_wait(3, 500);
+                println!();
+                blank_rail();
+
+                say(format!(
+                    "A {} pops out, scattering a pile of junk mail everywhere, and lands on your head like it owns the place!",
+                    bird()
+                ));
+
+                blank_rail();
+                say(format!("You found a {}! {} would be proud!", bird(), cat()));
+
+                self.found_bird()?;
+                sleep(600);
+
+                say(format!(
+                    "Keep collecting {}s, you're at {}/?.",
+                    bird(),
+                    self.birds_found
+                ));
+
+                blank_rail();
+                sleep(500);
+            } else {
+                say("Probably just junk mail. Besides, the mailbox looks like it's in a mood.");
+
+                blank_rail();
+                sleep(500);
+            }
+
+            say(format!(
+                "No sign of {} out here, just a warm spot where he used to be. He can't have gone far...",
+                cat()
+            ));
+
+            blank_rail();
+            sleep(400);
+        }
 
         Ok(self.where_next()?)
     }
@@ -411,7 +645,7 @@ impl Game {
         self.visited(Ending)?;
 
         say(format!(
-            "Larry opens the door to see {} curled up on the coach next to you.",
+            "Larry opens the door to see {} curled up on the couch next to you.",
             cat()
         ));
         sleep(500);
