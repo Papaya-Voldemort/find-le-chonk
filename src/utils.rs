@@ -1,10 +1,10 @@
 use console::Term;
+use owo_colors::DynColors::Rgb;
 use owo_colors::OwoColorize;
+use std::fmt::Display;
 use std::io::Write;
 use std::time::Duration;
 use std::{io, thread};
-use std::fmt::Display;
-use owo_colors::DynColors::Rgb;
 
 pub fn dot_with_wait(dot_count: u32, wait_between: u64) {
     print!("{}  ", "│".dimmed());
@@ -40,4 +40,8 @@ pub fn blank_rail() {
 
 pub fn cat() -> impl Display {
     "Le Chonk".color(Rgb(250, 82, 15))
+}
+
+pub fn bird() -> impl Display {
+    "bird".color(Rgb(178, 56, 255))
 }

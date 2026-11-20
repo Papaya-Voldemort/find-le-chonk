@@ -1,16 +1,37 @@
-use std::collections::HashSet;
 use crate::story::Scene;
-use std::io::Error;
 use cliclack::select;
+use rand::rng;
+use rand::seq::IndexedRandom;
+use std::collections::HashSet;
+use std::io::Error;
 
 pub struct Game {
     pub birds_found: u8,
     pub visited: HashSet<Scene>,
+    unlocked: Vec<Scene>,
+    pub cat_location: Scene,
 }
 
 impl Game {
     pub(crate) fn new() -> Self {
-        Game { birds_found: 0, visited: HashSet::new() }
+        let scene = [
+            Scene::Backyard,
+            Scene::Laundry,
+            Scene::Garage,
+            Scene::Porch,
+            Scene::Fridge,
+            Scene::Tree,
+        ]
+        .choose(&mut rng())
+        .copied()
+        .unwrap();
+
+        Game {
+            birds_found: 0,
+            visited: HashSet::new(),
+            unlocked: vec![],
+            cat_location: scene,
+        }
     }
 
     pub(crate) fn visited(&mut self, place: Scene) -> Result<(), Error> {
@@ -18,9 +39,20 @@ impl Game {
         Ok(())
     }
 
+    pub(crate) fn unlock(&mut self, scenes: impl IntoIterator<Item = Scene>) -> bool {
+        let before = self.unlocked.len();
+        for scene in scenes {
+            if !self.unlocked.contains(&scene) {
+                self.unlocked.push(scene);
+            }
+        }
+        self.unlocked.len() > before
+    }
+
     fn remaining(&self) -> Vec<Scene> {
-        Scene::EXPLORABLE
-            .into_iter()
+        self.unlocked
+            .iter()
+            .copied()
             .filter(|s| !self.visited.contains(s))
             .collect()
     }
@@ -28,7 +60,7 @@ impl Game {
     pub(crate) fn where_next(&mut self) -> Result<Scene, Error> {
         let options = self.remaining();
         if options.is_empty() {
-            return Ok(Scene::Ending); // all searched → ending unlocks itself
+            return Ok(Scene::Ending);
         }
 
         let mut prompt = select("Where do you look for Le Chonk?");
@@ -38,21 +70,30 @@ impl Game {
         Ok(prompt.interact()?)
     }
 
-    pub(crate) fn found_bird(&mut self) -> Result<(), Error>{
+    pub(crate) fn found_bird(&mut self) -> Result<(), Error> {
         self.birds_found += 1;
 
         Ok(())
     }
 
     pub(crate) fn main_story(&mut self) -> Result<(), Error> {
-        let start = self.opening()?;
-        match start {
-            Scene::Backyard => self.backyard()?,
-            Scene::Laundry => self.laundry()?,
-            Scene::Garage => self.garage()?,
-            Scene::Window => self.window()?,
-            _ => ()
+        let mut scene = self.opening()?;
+
+        loop {
+            scene = match scene {
+                Scene::Opening => self.opening()?,
+                Scene::Backyard => self.backyard()?,
+                Scene::Laundry => self.laundry()?,
+                Scene::Garage => self.garage()?,
+                Scene::Window => self.window()?,
+                Scene::Fridge => self.fridge()?,
+                Scene::Tree => self.tree()?,
+                Scene::Porch => self.porch()?,
+                Scene::Ending => break,
+            };
         }
+
+        self.ending()?;
 
         // add ascii Le Chonk later
 
